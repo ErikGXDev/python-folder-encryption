@@ -21,21 +21,31 @@ for root, dirs, files in os.walk("enc"):
     for file in files:
         # Get file path
         file_path = os.path.join(root, file)
-        # Open file
-        with open(file_path, "rb") as f:
-            data = f.read()
-        # Encrypt or decrypt data
-        try:
+        # Check if file has ".enc" extension
+        if file_path.endswith(".enc"):
+            # Open encrypted file
+            with open(file_path, "rb") as f:
+                data = f.read()
             # Decrypt data
             decrypted_data = fernet.decrypt(data)
+            # Remove ".enc" extension from file name
+            new_file_path = file_path[:-4]
             # Write decrypted data to file
-            with open(file_path, "wb") as f:
+            with open(new_file_path, "wb") as f:
                 f.write(decrypted_data)
-            print(f"Decrypted {file_path}")
-        except:
+            print(f"Decrypted {file_path} -> {new_file_path}")
+        else:
+            # Open file
+            with open(file_path, "rb") as f:
+                data = f.read()
             # Encrypt data
             encrypted_data = fernet.encrypt(data)
+            # Add ".enc" extension to file name
+            new_file_path = file_path + ".enc"
             # Write encrypted data to file
-            with open(file_path, "wb") as f:
+            with open(new_file_path, "wb") as f:
                 f.write(encrypted_data)
-            print(f"Encrypted {file_path}")
+            print(f"Encrypted {file_path} -> {new_file_path}")
+
+print("Finished.")
+input()
